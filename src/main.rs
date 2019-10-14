@@ -22,7 +22,7 @@ fn main() {
     fs::create_dir(cases_path.join("in")).unwrap();
     fs::create_dir(cases_path.join("out")).unwrap();
 
-    let sample_num = 3;
+    let sample_num: usize = args[2].parse().unwrap();
     for i in 0..2*sample_num {
         let selector_prefix = "#pre-sample".to_string();
         let selector_str = selector_prefix.clone() + &i.to_string();
