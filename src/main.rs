@@ -1,8 +1,15 @@
-use std::fs;
+use std::env;
+use std::fs::File;
 use scraper::{Html, Selector};
+use std::io::prelude::*;
 
 fn main() {
-    let html = fs::read_to_string("index.html").unwrap();
+    let args: Vec<String> = env::args().collect();
+
+    let filename = &args[1];
+    let mut f = File::open(filename).expect("file not found");
+    let mut html = String::new();
+    f.read_to_string(&mut html).expect("something went wrong reading the file");
 
     let document = Html::parse_document(&html);
 
