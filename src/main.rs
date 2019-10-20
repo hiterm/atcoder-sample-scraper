@@ -8,7 +8,19 @@ use scraper::{Html, Selector};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let filename = &args[1];
+    let (filename, sample_num) =
+        if args.len() >= 3 {
+            let filename = &args[1];
+            let sample_num: usize = args[2].parse().unwrap();
+            (filename, sample_num)
+        } else if args.len() == 2 {
+            let filename = &args[1];
+            (filename, 3)
+        } else {
+            println!("usage: command file.html [sample_num]");
+            std::process::exit(1);
+        };
+
     let mut file = File::open(filename).expect("file not found");
     let mut html = String::new();
     file.read_to_string(&mut html).expect("something went wrong reading the file");
@@ -22,7 +34,6 @@ fn main() {
     fs::create_dir(cases_path.join("in")).unwrap();
     fs::create_dir(cases_path.join("out")).unwrap();
 
-    let sample_num: usize = args[2].parse().unwrap();
     for i in 0..2*sample_num {
         let selector_prefix = "#pre-sample".to_string();
         let selector_str = selector_prefix.clone() + &i.to_string();
