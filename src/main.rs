@@ -1,9 +1,9 @@
-use std::io::prelude::*;
+use scraper::{Html, Selector};
 use std::env;
 use std::fs;
 use std::fs::{File, OpenOptions};
+use std::io::prelude::*;
 use std::path::Path;
-use scraper::{Html, Selector};
 
 enum SampleType {
     In,
@@ -23,22 +23,22 @@ impl std::fmt::Display for SampleType {
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let (filename, sample_total_num) =
-        if args.len() >= 3 {
-            let filename = &args[1];
-            let sample_num: usize = args[2].parse().unwrap();
-            (filename, sample_num)
-        } else if args.len() == 2 {
-            let filename = &args[1];
-            (filename, 3)
-        } else {
-            println!("usage: command file.html [sample_num]");
-            std::process::exit(1);
-        };
+    let (filename, sample_total_num) = if args.len() >= 3 {
+        let filename = &args[1];
+        let sample_num: usize = args[2].parse().unwrap();
+        (filename, sample_num)
+    } else if args.len() == 2 {
+        let filename = &args[1];
+        (filename, 3)
+    } else {
+        println!("usage: command file.html [sample_num]");
+        std::process::exit(1);
+    };
 
     let mut file = File::open(filename).expect("file not found");
     let mut html = String::new();
-    file.read_to_string(&mut html).expect("something went wrong reading the file");
+    file.read_to_string(&mut html)
+        .expect("something went wrong reading the file");
 
     let document = Html::parse_document(&html);
 
@@ -72,7 +72,11 @@ fn main() {
                         SampleType::In => cases_in_path.join(format!("s{}.txt", sample_num)),
                         SampleType::Out => cases_out_path.join(format!("s{}.txt", sample_num)),
                     };
-                    let mut write_file = OpenOptions::new().write(true).create_new(true).open(write_path).unwrap();
+                    let mut write_file = OpenOptions::new()
+                        .write(true)
+                        .create_new(true)
+                        .open(write_path)
+                        .unwrap();
                     write_file.write_all(elem.inner_html().as_bytes()).unwrap();
                 }
                 None => println!("Not found: {}", selector_str),
