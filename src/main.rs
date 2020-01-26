@@ -69,8 +69,8 @@ fn main() {
                     println!("{}", elem.inner_html());
 
                     let write_path = match sample_type {
-                        SampleType::In => cases_in_path.join(format!("s{}.txt", sample_num)),
-                        SampleType::Out => cases_out_path.join(format!("s{}.txt", sample_num)),
+                        SampleType::In => cases_in_path.join(format!("s{}", sample_num)),
+                        SampleType::Out => cases_out_path.join(format!("s{}", sample_num)),
                     };
                     let mut write_file = OpenOptions::new()
                         .write(true)
