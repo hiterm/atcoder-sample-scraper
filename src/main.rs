@@ -1,5 +1,4 @@
 use scraper::{Html, Selector};
-use std::env;
 use std::fs;
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
@@ -44,16 +43,24 @@ fn main() {
 
     let document = Html::parse_document(&html);
 
-    let cases_path = Path::new("cases");
-    let cases_in_path = cases_path.join("in");
-    let cases_out_path = cases_path.join("out");
-    fs::create_dir(cases_path).unwrap();
-    fs::create_dir(cases_path.join("in")).unwrap();
-    fs::create_dir(cases_path.join("out")).unwrap();
+    let cases_root_path = Path::new("cases");
+    let cases_problem_path = cases_root_path.join(problem);
+    let cases_in_path = cases_problem_path.join("in");
+    let cases_out_path = cases_problem_path.join("out");
+    if cases_in_path.exists() || cases_out_path.exists() {
+        println!(
+            "Already {} or {} exists.",
+            cases_in_path.display(),
+            cases_out_path.display()
+        );
+        std::process::exit(1);
+    }
+    fs::create_dir_all(&cases_in_path).unwrap();
+    fs::create_dir_all(&cases_out_path).unwrap();
 
     for sample_num in 1..=sample_total_num {
         println!("### s{} ###", sample_num);
-        println!("");
+        println!();
 
         for sample_type in [SampleType::In, SampleType::Out].iter() {
             let sample_index = match sample_type {
